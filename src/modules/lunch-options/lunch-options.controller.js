@@ -1,4 +1,4 @@
-const { createMenu } = require("./lunch-options.service")
+const { createMenu, getAllMenus } = require("./lunch-options.service")
 
 const createMenuController = async (req, res) => {
     try {
@@ -19,7 +19,25 @@ const createMenuController = async (req, res) => {
     }
 
 }
+const getAllMenusController = async (req, res) => {
+    try {
+        const result = await getAllMenus(lunchOptions)
+        res.status(200).json({
+            success: true,
+            message: "All menus fetched successfully!",
+            data: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err?.message || "Menu fetch failed!",
+            error: err
+        })
+    }
+
+}
 
 module.exports = {
-    createMenuController
+    createMenuController,
+    getAllMenusController
 }

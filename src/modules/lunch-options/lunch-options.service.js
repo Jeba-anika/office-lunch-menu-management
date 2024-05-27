@@ -12,6 +12,13 @@ const createMenu = async (data) => {
     return result.rows
 }
 
+
+const getAllMenus = async () => {
+    const result = await pool.query(`SELECT * from lunch_options`)
+    return result
+}
+
 module.exports = {
-    createMenu
+    createMenu,
+    getAllMenus
 }

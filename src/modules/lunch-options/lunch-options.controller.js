@@ -3,7 +3,6 @@ const { createMenu, getAllMenus, getSingleMenu, updateSingleMenu, deleteSingleMe
 const createMenuController = async (req, res) => {
     try {
         const lunchOptions = req?.body
-        console.log(lunchOptions)
         const result = await createMenu(lunchOptions)
         res.status(200).json({
             success: true,
@@ -40,7 +39,6 @@ const getAllMenusController = async (req, res) => {
 const getSingleMenuController = async (req, res) => {
     try {
         const { lunchOptionId } = req.params
-        console.log(lunchOptionId)
         const result = await getSingleMenu(lunchOptionId)
         res.status(200).json({
             success: true,

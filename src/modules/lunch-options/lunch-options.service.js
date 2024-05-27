@@ -43,10 +43,16 @@ const updateSingleMenu = async (lunchOptionId, data) => {
     return result.rows
 }
 
+const deleteSingleMenu = async (lunchOptionId) => {
+    const query = `DELETE FROM lunch_options WHERE id = $1 RETURNING *`
+    const result = await pool.query(query, [lunchOptionId])
+    return result.rows
+}
 
 module.exports = {
     createMenu,
     getAllMenus,
     getSingleMenu,
-    updateSingleMenu
+    updateSingleMenu,
+    deleteSingleMenu
 }

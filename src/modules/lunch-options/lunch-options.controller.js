@@ -1,4 +1,4 @@
-const { createMenu, getAllMenus, getSingleMenu, updateSingleMenu } = require("./lunch-options.service")
+const { createMenu, getAllMenus, getSingleMenu, updateSingleMenu, deleteSingleMenu } = require("./lunch-options.service")
 
 const createMenuController = async (req, res) => {
     try {
@@ -77,10 +77,31 @@ const updateMenuController = async (req, res) => {
     }
 
 }
+const deleteMenuController = async (req, res) => {
+    try {
+        const { lunchOptionId } = req.params
+        const result = await deleteSingleMenu(lunchOptionId)
+        res.status(200).json({
+            success: true,
+            message: "Menu deleted successfully!",
+            data: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err?.message || "Menu delete failed!",
+            error: err
+        })
+    }
+
+}
+
+
 
 module.exports = {
     createMenuController,
     getAllMenusController,
     getSingleMenuController,
-    updateMenuController
+    updateMenuController,
+    deleteMenuController
 }

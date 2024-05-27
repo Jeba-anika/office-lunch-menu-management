@@ -36,8 +36,20 @@ const getLunchChoiceOfSingleEmployee = async (employeeId) => {
 }
 
 
+const updateLunchChoiceOfSingleEmployee = async (choiceId, data) => {
+    const keys = Object.keys(data)
+    const values = []
+    const query = `UPDATE employee_choices SET ${keys.map((key, index) => {
+        values.push(data[key])
+        return `${key}= $${index + 1}`
+    })} WHERE id=$${keys.length + 1} RETURNING *`
+    const result = await pool.query(query, [...values, choiceId])
+    return result.rows
+}
+
 module.exports = {
     createEmployeeChoice,
     getAllEmployeeChoices,
-    getLunchChoiceOfSingleEmployee
+    getLunchChoiceOfSingleEmployee,
+    updateLunchChoiceOfSingleEmployee
 }

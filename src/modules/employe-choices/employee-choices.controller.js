@@ -1,4 +1,4 @@
-const { createEmployeeChoice, getAllEmployeeChoices, getLunchChoiceOfSingleEmployee } = require("./employee-choices.service")
+const { createEmployeeChoice, getAllEmployeeChoices, getLunchChoiceOfSingleEmployee, updateLunchChoiceOfSingleEmployee } = require("./employee-choices.service")
 
 const createEmployeeChoiceController = async (req, res) => {
     try {
@@ -54,9 +54,28 @@ const getLunchChoiceOfSingleEmployeeController = async (req, res) => {
         })
     }
 }
+const updateLunchChoiceOfSingleEmployeeController = async (req, res) => {
+    try {
+        const { choiceId } = req.params
+        const data = req.body
+        const result = await updateLunchChoiceOfSingleEmployee(choiceId, data)
+        res.status(200).json({
+            success: true,
+            message: "Single employee choice updated successfully!",
+            data: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err?.message || "Single employee choice update failed!",
+            error: err
+        })
+    }
+}
 
 module.exports = {
     createEmployeeChoiceController,
     getAllEmployeeChoicesController,
-    getLunchChoiceOfSingleEmployeeController
+    getLunchChoiceOfSingleEmployeeController,
+    updateLunchChoiceOfSingleEmployeeController
 }

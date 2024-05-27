@@ -13,12 +13,25 @@ const createMenu = async (data) => {
 }
 
 
-const getAllMenus = async () => {
-    const result = await pool.query(`SELECT * from lunch_options`)
-    return result
+const getAllMenus = async (date) => {
+    let result
+    if (date) {
+        result = await pool.query(`SELECT * from lunch_options WHERE date=$1`, [date])
+    } else {
+        result = await pool.query(`SELECT * from lunch_options`)
+    }
+
+    return result.rows
+}
+
+
+const getSingleMenu = async (lunchOptionId) => {
+    const result = await pool.query(`SELECT * from lunch_options WHERE id = $1`, [lunchOptionId])
+    return result.rows[0]
 }
 
 module.exports = {
     createMenu,
-    getAllMenus
+    getAllMenus,
+    getSingleMenu
 }

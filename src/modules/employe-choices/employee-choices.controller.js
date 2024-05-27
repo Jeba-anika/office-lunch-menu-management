@@ -1,4 +1,4 @@
-const { createEmployeeChoice } = require("./employee-choices.service")
+const { createEmployeeChoice, getAllEmployeeChoices, getLunchChoiceOfSingleEmployee } = require("./employee-choices.service")
 
 const createEmployeeChoiceController = async (req, res) => {
     try {
@@ -20,11 +20,39 @@ const createEmployeeChoiceController = async (req, res) => {
 
 
 const getAllEmployeeChoicesController = async (req, res) => {
-
+    try {
+        const { date, lunchOptionId } = req.query
+        const result = await getAllEmployeeChoices(date, lunchOptionId)
+        res.status(200).json({
+            success: true,
+            message: "All employee choice fetched successfully!",
+            data: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err?.message || "All employee choice fetch failed!",
+            error: err
+        })
+    }
 }
 
 const getLunchChoiceOfSingleEmployeeController = async (req, res) => {
-
+    try {
+        const { employeeId } = req.params
+        const result = await getLunchChoiceOfSingleEmployee(employeeId)
+        res.status(200).json({
+            success: true,
+            message: "Single employee choice fetched successfully!",
+            data: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err?.message || "Single employee choice fetch failed!",
+            error: err
+        })
+    }
 }
 
 module.exports = {

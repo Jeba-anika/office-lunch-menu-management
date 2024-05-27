@@ -14,13 +14,27 @@ const createEmployeeChoice = async (data) => {
 }
 
 
-const getAllEmployeeChoices = async () => {
-
+const getAllEmployeeChoices = async (date, lunchOptionId) => {
+    let result
+    if (date && lunchOptionId) {
+        result = await pool.query(`SELECT * FROM employee_choices WHERE choice_date=$1 AND lunchoptionid = $2`, [date, lunchOptionId])
+    } else if (date) {
+        result = await pool.query(`SELECT * FROM employee_choices WHERE choice_date=$1 `, [date])
+    }
+    else if (lunchOptionId) {
+        result = await pool.query(`SELECT * FROM employee_choices WHERE lunchoptionid = $1 `, [lunchOptionId])
+    }
+    else {
+        result = await pool.query(`SELECT * FROM employee_choices`)
+    }
+    return result.rows
 }
 
-const getLunchChoiceOfSingleEmployee = async () => {
-
+const getLunchChoiceOfSingleEmployee = async (employeeId) => {
+    const result = await pool.query(`SELECT * FROM employee_choices WHERE employeeid=$1`, [employeeId])
+    return result.rows
 }
+
 
 module.exports = {
     createEmployeeChoice,

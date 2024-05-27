@@ -11,6 +11,10 @@ const createUser = async (data) => {
     try {
 
         await client.query('BEGIN')
+        const isUserExists = await client.query('SELECT * FROM users WHERE email = $1', [userData.email])
+        if (isUserExists.rows.length > 0) {
+            throw new Error('User already exists! Please login!')
+        }
         const userResult = await client.query(
             'INSERT INTO users (email, password,role) VALUES ($1, $2, $3) RETURNING *',
             [data?.email, data?.password, 'employee']
@@ -29,14 +33,27 @@ const createUser = async (data) => {
 
     } catch (err) {
         await client.query('ROLLBACK');
-        console.log(err)
-        throw new Error('Error during transaction',)
+        throw new Error(err.message)
 
     } finally {
         client.release();
     }
 }
 
+
+const loginUser = async (userData) => {
+    const client = await pool.connect()
+    const isUserExists = await client.query('SELECT * FROM users WHERE email = $1', [userData.email])
+    if (isUserExists.rows.length > 0) {
+        if (isUserExists.rows[0].password === userData.password) {
+            return isUserExists.rows[0]
+        }
+    } else {
+        throw new Error('User does not exist!')
+    }
+}
+
 module.exports = {
-    createUser
+    createUser,
+    loginUser
 }

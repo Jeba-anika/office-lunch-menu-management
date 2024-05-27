@@ -30,8 +30,23 @@ const getSingleMenu = async (lunchOptionId) => {
     return result.rows[0]
 }
 
+const updateSingleMenu = async (lunchOptionId, data) => {
+    const keys = Object.keys(data)
+    const values = []
+    const query = `UPDATE lunch_options SET ${keys.map((key, index) => {
+        values.push(data[key])
+        return `${key}= $${index + 1}`
+    })} WHERE id=$${keys.length + 1} RETURNING *`
+
+
+    const result = await pool.query(query, [...values, lunchOptionId])
+    return result.rows
+}
+
+
 module.exports = {
     createMenu,
     getAllMenus,
-    getSingleMenu
+    getSingleMenu,
+    updateSingleMenu
 }

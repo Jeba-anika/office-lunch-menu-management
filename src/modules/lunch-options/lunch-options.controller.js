@@ -1,4 +1,4 @@
-const { createMenu, getAllMenus, getSingleMenu } = require("./lunch-options.service")
+const { createMenu, getAllMenus, getSingleMenu, updateSingleMenu } = require("./lunch-options.service")
 
 const createMenuController = async (req, res) => {
     try {
@@ -57,8 +57,30 @@ const getSingleMenuController = async (req, res) => {
 
 }
 
+
+const updateMenuController = async (req, res) => {
+    try {
+        const { lunchOptionId } = req.params
+        const data = req.body
+        const result = await updateSingleMenu(lunchOptionId, data)
+        res.status(200).json({
+            success: true,
+            message: "Menu updated successfully!",
+            data: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err?.message || "Menu update failed!",
+            error: err
+        })
+    }
+
+}
+
 module.exports = {
     createMenuController,
     getAllMenusController,
-    getSingleMenuController
+    getSingleMenuController,
+    updateMenuController
 }

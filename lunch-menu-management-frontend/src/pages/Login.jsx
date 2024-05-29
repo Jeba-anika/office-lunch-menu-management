@@ -16,12 +16,11 @@ const Login = () => {
 
 
     const onFinish = async (values) => {
-        console.log(values)
+
         try {
-            console.log(values)
+
             const response = await axios.post(`http://localhost:5000/api/v1/users/login`, values)
             if (response.status === 200) {
-                console.log(response)
                 setAuth({
                     token: response.data.data.accessToken,
                     data: response.data.data.user

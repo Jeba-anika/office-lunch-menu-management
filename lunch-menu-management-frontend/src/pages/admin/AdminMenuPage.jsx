@@ -1,7 +1,9 @@
-import { Button, DatePicker, Form, Input, Space, Table } from 'antd';
+import { Button, DatePicker, Form, Input, Space, Table, message } from 'antd';
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MyModal from '../../components/common/MyModal';
+import { useAxios } from '../../hooks/useAxios';
+
 const { TextArea } = Input;
 
 const data = [
@@ -21,23 +23,89 @@ const data = [
     }
 ];
 const AdminMenuPage = () => {
+    const [form] = Form.useForm();
+    const [messageApi, contextHolder] = message.useMessage()
+    const { api } = useAxios()
+    const [allMenus, setAllMenus] = useState([])
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-    const [selectedMenu, setSelectedMenu] = useState(false)
+    const [selectedMenu, setSelectedMenu] = useState({
+        date: new Date(),
+        option_name: '',
+        description: ''
+    })
+
+    const fetchData = async () => {
+        const response = await api.get("http://localhost:5000/api/v1/lunch-options")
+        if (response.status === 200) {
+            const menus = response?.data?.data.map(item => { return { key: item.id, ...item } })
+            setAllMenus(menus)
+        }
+    }
+
+    useEffect(() => {
+
+        fetchData()
+    }, [])
+
+    useEffect(() => {
+        form.setFieldsValue({
+            ...selectedMenu,
+            date: dayjs(selectedMenu.date)
+        });
+    }, [selectedMenu, form]);
+
+
+
+    const onFinish = async (values) => {
+
+        const editedMenu = { ...values, date: new Date(values.date).toISOString() }
+        const response = await api.put(`http://localhost:5000/api/v1/lunch-options/${selectedMenu.id}`, editedMenu)
+        if (response.status === 200) {
+            messageApi.open({
+                type: 'success',
+                content: 'Menu Edited',
+            });
+            fetchData()
+            form.resetFields()
+            setSelectedMenu({})
+            setIsEditModalOpen(false)
+
+        }
+    };
+
 
     const handleEditMenu = () => {
         setIsEditModalOpen(false);
     };
     const handleEditCancel = () => {
         setIsEditModalOpen(false);
+        form.resetFields()
+
+        setSelectedMenu({})
     };
-    const handleDeleteMenu = () => {
-        setIsConfirmDeleteModalOpen(false);
+    const handleDeleteMenu = async () => {
+        const response = await api.delete(`http://localhost:5000/api/v1/lunch-options/${selectedMenu.id}`)
+        if (response.status === 200) {
+            fetchData()
+            setSelectedMenu({})
+            setIsConfirmDeleteModalOpen(false);
+            messageApi.open({
+                type: 'error',
+                content: 'Menu Deleted',
+            });
+
+        } else {
+            messageApi.open({
+                type: 'error',
+                content: 'Some error occurred',
+            });
+        }
+
     };
     const handleDeleteCancel = () => {
         setIsConfirmDeleteModalOpen(false);
     };
-
 
 
 
@@ -56,7 +124,7 @@ const AdminMenuPage = () => {
         {
             title: 'Option Name',
             dataIndex: 'option_name',
-            key: 'address',
+            key: 'option_name',
         },
         {
             title: 'Description',
@@ -70,12 +138,16 @@ const AdminMenuPage = () => {
             render: (_, record) => (
                 <Space size="middle">
                     <Button type="primary" onClick={() => {
+
+                        console.log(record)
+                        const data = { ...record, date: dayjs(record.date) }
+                        console.log(data)
+                        setSelectedMenu(data)
                         setIsEditModalOpen(true)
-                        setSelectedMenu({ ...record, date: dayjs(record.date) })
                     }}>Edit</Button>
                     <Button type="primary" onClick={() => {
-                        setIsConfirmDeleteModalOpen(true)
                         setSelectedMenu({ ...record, date: dayjs(record.date) })
+                        setIsConfirmDeleteModalOpen(true)
                     }}>Delete</Button>
                 </Space>
             ),
@@ -86,24 +158,16 @@ const AdminMenuPage = () => {
 
 
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
 
-
-    const onDateChange = (date, dateString) => {
-        console.log(date, dateString);
-    };
     return (
         <>
-            <Table columns={columns} dataSource={data} />
+            {contextHolder}
+            <Table columns={columns} dataSource={allMenus} />
 
             {/* Edit modal */}
-            <MyModal title={"Edit Menu"} handleOk={handleEditMenu} isModalOpen={isEditModalOpen} handleCancel={handleEditCancel}>
+            <MyModal title={"Edit Menu"} footer={null} handleOk={handleEditMenu} isModalOpen={isEditModalOpen} handleCancel={handleEditCancel}>
                 <Form
+                    form={form}
                     name="basic"
                     labelCol={{
                         span: 8,
@@ -114,9 +178,9 @@ const AdminMenuPage = () => {
                     style={{
                         maxWidth: 600,
                     }}
+
                     initialValues={selectedMenu}
                     onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
                     <Form.Item
@@ -173,10 +237,9 @@ const AdminMenuPage = () => {
                 </Form>
             </MyModal>
 
-
             {/* Delete modal */}
             <MyModal title={"Confirm Delete"} handleOk={handleDeleteMenu} isModalOpen={isConfirmDeleteModalOpen} handleCancel={handleDeleteCancel}>
-                Are you sure you want to delete this menu: {selectedMenu.name}?
+                Are you sure you want to delete this menu: {selectedMenu.option_name}?
             </MyModal>
         </>
     )

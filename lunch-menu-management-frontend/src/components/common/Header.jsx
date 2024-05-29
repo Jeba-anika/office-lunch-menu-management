@@ -12,7 +12,10 @@ const Header = () => {
                     auth && auth?.data?.email && auth?.token ? <button onClick={() => {
                         console.log(auth)
                         setAuth({})
-                    }}>Logout</button> : <Link to='/login'>Login</Link>
+                    }}>Logout</button> : <>
+                        <Link to='/login'>Login</Link>
+                        <Link to='/register'>Register</Link>
+                    </>
                 }
             </div>
         </div>

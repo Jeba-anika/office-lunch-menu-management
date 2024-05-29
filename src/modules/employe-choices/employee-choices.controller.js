@@ -3,7 +3,8 @@ const { createEmployeeChoice, getAllEmployeeChoices, getLunchChoiceOfSingleEmplo
 const createEmployeeChoiceController = async (req, res) => {
     try {
         const data = req?.body
-        const result = await createEmployeeChoice(data)
+        const userId = req?.userId
+        const result = await createEmployeeChoice(data, userId)
         res.status(200).json({
             success: true,
             message: "Menu selected successfully!",

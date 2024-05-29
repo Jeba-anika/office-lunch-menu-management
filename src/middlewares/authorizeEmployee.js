@@ -13,6 +13,7 @@ const authorizeEmployee = async (req, res, next) => {
         const isUserExists = await pool.query(`SELECT * FROM users WHERE id=$1`, [userId])
         if (isUserExists.rows.length > 0) {
             if (role === 'employee') {
+                req.userId = userId
                 next()
             } else {
                 throw new Error('User is not authorized!')

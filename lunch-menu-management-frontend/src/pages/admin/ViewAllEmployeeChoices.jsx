@@ -1,5 +1,6 @@
 import { Table } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAxios } from '../../hooks/useAxios';
 const data = [
     {
         key: '1',
@@ -18,6 +19,19 @@ const data = [
 ];
 
 const ViewAllEmployeeChoices = () => {
+    const { api } = useAxios()
+    const [allEmployeeChoices, setAllEmployeeChoices] = useState([])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await api.get("http://localhost:5000/api/v1/employee-choices")
+            console.log(response)
+            if (response.status === 200) {
+                setAllEmployeeChoices(response.data.data)
+            }
+        }
+        fetchData()
+    }, [])
     const columns = [
         {
             title: 'Id',
@@ -42,7 +56,7 @@ const ViewAllEmployeeChoices = () => {
         }
     ];
     return (
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={allEmployeeChoices} />
     );
 };
 

@@ -13,13 +13,7 @@ const DashboardLayout = () => {
         <Layout>
             <DashboardSidebar />
             <Layout>
-                <Header
-                    style={{
-                        padding: 0,
-                        background: colorBgContainer,
-                    }}
 
-                ></Header>
                 <Content
                     style={{
                         margin: '24px 16px 0',
@@ -36,13 +30,7 @@ const DashboardLayout = () => {
                         <Outlet />
                     </div>
                 </Content>
-                <Footer
-                    style={{
-                        textAlign: 'center',
-                    }}
-                >
-                    Ant Design ©{new Date().getFullYear()} Created by Ant UED
-                </Footer>
+
             </Layout>
         </Layout>
     );

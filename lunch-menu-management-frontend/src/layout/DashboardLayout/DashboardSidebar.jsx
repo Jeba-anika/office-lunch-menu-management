@@ -1,22 +1,39 @@
-import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
 import React from 'react';
+import { Link } from 'react-router-dom';
+import useAuth from './../../hooks/useAuth';
 const { Header, Content, Footer, Sider } = Layout;
 
 
 
-const items = [UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].map(
-    (icon, index) => ({
-        key: String(index + 1),
-        icon: React.createElement(icon),
-        label: `nav ${index + 1}`,
-    }),
-);
+
 
 const DashboardSidebar = () => {
+    const { auth } = useAuth()
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+
+    let items = []
+    if (auth?.data?.role === 'admin') {
+        items = [{ label: 'Lunch menu', href: '/admin/menu', icon: UploadOutlined }, { label: 'Employee choices', href: '/admin/view-choice', icon: UserOutlined }].map(
+            (item, index) => ({
+                key: String(index + 1),
+                icon: React.createElement(item.icon),
+                label: <Link to={item.href}>{item.label}</Link>,
+            }),
+        );
+    } else {
+        items = [{ label: 'Lunch menu', href: '/admin/menu', icon: UserOutlined }].map(
+            (item, index) => ({
+                key: String(index + 1),
+                icon: React.createElement(item.icon),
+                label: <Link to={item.href}>{item.label}</Link>,
+            }),
+        );
+    }
+
     return (
         <Sider
             style={{

@@ -1,4 +1,5 @@
-import { Button, DatePicker, Form, Input, Space, Table, message } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import { Button, Card, DatePicker, Form, Input, Space, Table, message } from 'antd';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import MyModal from '../../components/common/MyModal';
@@ -27,6 +28,7 @@ const AdminMenuPage = () => {
     const [messageApi, contextHolder] = message.useMessage()
     const { api } = useAxios()
     const [allMenus, setAllMenus] = useState([])
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState({
@@ -75,13 +77,19 @@ const AdminMenuPage = () => {
     };
 
 
+    const handleAddCancel = () => {
+        setIsAddModalOpen(false)
+    }
+    const handleAddMenu = () => {
+        setIsAddModalOpen(false)
+    }
+
     const handleEditMenu = () => {
         setIsEditModalOpen(false);
     };
     const handleEditCancel = () => {
         setIsEditModalOpen(false);
         form.resetFields()
-
         setSelectedMenu({})
     };
     const handleDeleteMenu = async () => {
@@ -155,14 +163,134 @@ const AdminMenuPage = () => {
     ];
 
 
-
+    const onAddFinish = async (values) => {
+        console.log(values)
+        const data = values?.items.map(value => { return { ...value, date: new Date(value.date).toISOString() } })
+        const response = await api.post('http://localhost:5000/api/v1/lunch-options/create-menu', { options: data })
+        if (response.status === 200) {
+            fetchData()
+            setIsAddModalOpen(false)
+            messageApi.open({
+                type: 'success',
+                content: 'Menu Added',
+            });
+            form.resetFields()
+        }
+    }
 
 
 
     return (
         <>
             {contextHolder}
+            <div className="flex justify-between m-4">
+                <div className="font-bold text-xl">All Lunch Menus</div>
+                <div><Button onClick={() => setIsAddModalOpen(true)}>Add Menu</Button></div>
+            </div>
             <Table columns={columns} dataSource={allMenus} />
+
+            <MyModal title="Add Menu" footer={null} handleOk={handleAddMenu} handleCancel={handleAddCancel} isModalOpen={isAddModalOpen}>
+                <Form
+                    form={form}
+                    onFinish={onAddFinish}
+                    labelCol={{
+                        span: 6,
+                    }}
+                    wrapperCol={{
+                        span: 18,
+                    }}
+                    form={form}
+                    name="dynamic_form_complex"
+                    style={{
+                        maxWidth: 600,
+                    }}
+                    autoComplete="off"
+                    initialValues={{
+                        items: [{}],
+                    }}
+                >
+                    <Form.List name="items">
+                        {(fields, { add, remove }) => (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    rowGap: 16,
+                                    flexDirection: 'column',
+                                }}
+                            >
+                                {fields.map((field) => (
+                                    <Card
+                                        size="small"
+                                        title={`Menu ${field.name + 1}`}
+                                        key={field.key}
+                                        extra={
+                                            <CloseOutlined
+                                                onClick={() => {
+                                                    remove(field.name);
+                                                }}
+                                            />
+                                        }
+                                    >
+
+                                        <Form.Item
+                                            label="Name"
+                                            name={[field.name, 'option_name']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please provide a name for the menu!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Description"
+                                            name={[field.name, 'description']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please provide a description for the menu!',
+                                                },
+                                            ]}
+                                        >
+                                            <TextArea rows={4} />
+                                        </Form.Item>
+
+
+                                        <Form.Item
+                                            label="Date"
+                                            name={[field.name, 'date']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please provide a date for the menu!',
+                                                },
+                                            ]}
+                                        >
+                                            <DatePicker />
+                                        </Form.Item>
+
+
+
+
+                                    </Card>
+                                ))}
+
+                                <Button type="dashed" onClick={() => add()} block>
+                                    + Add Item
+                                </Button>
+                            </div>
+                        )}
+                    </Form.List>
+
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </MyModal>
 
             {/* Edit modal */}
             <MyModal title={"Edit Menu"} footer={null} handleOk={handleEditMenu} isModalOpen={isEditModalOpen} handleCancel={handleEditCancel}>

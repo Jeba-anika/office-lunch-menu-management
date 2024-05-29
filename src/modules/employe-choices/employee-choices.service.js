@@ -17,15 +17,26 @@ const createEmployeeChoice = async (data) => {
 const getAllEmployeeChoices = async (date, lunchOptionId) => {
     let result
     if (date && lunchOptionId) {
-        result = await pool.query(`SELECT * FROM employee_choices WHERE choice_date=$1 AND lunchoptionid = $2`, [date, lunchOptionId])
+        result = await pool.query(`SELECT * FROM employee_choices 
+        JOIN employees ON employee_choices.employeeid = employees.id
+        JOIN lunch_options ON employee_choices.lunchoptionid = lunch_options.id
+         WHERE choice_date=$1 AND lunchoptionid = $2 `, [date, lunchOptionId])
     } else if (date) {
-        result = await pool.query(`SELECT * FROM employee_choices WHERE choice_date=$1 `, [date])
+        result = await pool.query(`SELECT * FROM employee_choices 
+        JOIN employees ON employee_choices.employeeid = employees.id
+        JOIN lunch_options ON employee_choices.lunchoptionid = lunch_options.id
+         WHERE choice_date=$1 `, [date])
     }
     else if (lunchOptionId) {
-        result = await pool.query(`SELECT * FROM employee_choices WHERE lunchoptionid = $1 `, [lunchOptionId])
+        result = await pool.query(`SELECT * FROM employee_choices 
+        JOIN employees ON employee_choices.employeeid = employees.id
+        JOIN lunch_options ON employee_choices.lunchoptionid = lunch_options.id
+         WHERE lunchoptionid = $1 `, [lunchOptionId])
     }
     else {
-        result = await pool.query(`SELECT * FROM employee_choices`)
+        result = await pool.query(`SELECT * FROM employee_choices 
+         JOIN employees ON employee_choices.employeeid = employees.id
+        JOIN lunch_options ON employee_choices.lunchoptionid = lunch_options.id`)
     }
     return result.rows
 }

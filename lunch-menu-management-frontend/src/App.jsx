@@ -6,6 +6,7 @@ import DashboardLayout from "./layout/DashboardLayout/DashboardLayout";
 import Homepage from "./pages/Homepage";
 import AdminMenuPage from "./pages/admin/AdminMenuPage";
 import ViewAllEmployeeChoices from "./pages/admin/ViewAllEmployeeChoices";
+import ViewDailyMenu from "./pages/employee/ViewDailyMenu";
 function App() {
 
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route element={<DashboardLayout />}>
             <Route path="/admin/menu" element={<AdminMenuPage />}></Route>
             <Route path="/admin/view-choice" element={<ViewAllEmployeeChoices />}></Route>
+            <Route path="/employee/view-menu" element={<ViewDailyMenu />}></Route>
           </Route>
         </Route>
 

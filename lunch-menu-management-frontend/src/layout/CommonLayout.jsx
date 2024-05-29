@@ -6,9 +6,11 @@ const CommonLayout = () => {
     return (
         <div>
             <Header />
-            <>
+
+            <div className="min-h-full">
                 <Outlet />
-            </>
+            </div>
+
             <Footer />
         </div>
     );

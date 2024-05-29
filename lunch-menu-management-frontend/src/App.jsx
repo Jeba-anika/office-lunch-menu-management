@@ -7,14 +7,15 @@ import AdminMenuPage from "./pages/admin/AdminMenuPage";
 function App() {
 
   return (
-    <div className="roboto-condensed-lmm">
+    <div className="libre-baskerville-regular mx-20">
       <Routes>
         <Route element={<CommonLayout />}>
           <Route path="/" element={<Homepage />}></Route>
+          <Route element={<DashboardLayout />}>
+            <Route path="/admin/menu" element={<AdminMenuPage />}></Route>
+          </Route>
         </Route>
-        <Route element={<DashboardLayout />}>
-          <Route path="/admin/menu" element={<AdminMenuPage />}></Route>
-        </Route>
+
       </Routes>
 
     </div>

@@ -7,7 +7,7 @@ const CommonLayout = () => {
         <div>
             <Header />
 
-            <div className="min-h-full">
+            <div className="min-h-screen">
                 <Outlet />
             </div>
 

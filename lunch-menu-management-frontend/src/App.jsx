@@ -1,13 +1,23 @@
 
-
+import { Route, Routes } from "react-router-dom";
+import CommonLayout from "./layout/CommonLayout";
+import DashboardLayout from "./layout/DashboardLayout";
+import Homepage from "./pages/Homepage";
+import AdminMenuPage from "./pages/admin/AdminMenuPage";
 function App() {
 
   return (
-    <>
-      <h1
-        className="text-3xl text-center text-red-700"
-      >Welcome to Vite with TailwindCSS and React</h1>
-    </>
+    <div className="roboto-condensed-lmm">
+      <Routes>
+        <Route element={<CommonLayout />}>
+          <Route path="/" element={<Homepage />}></Route>
+        </Route>
+        <Route element={<DashboardLayout />}>
+          <Route path="/admin/menu" element={<AdminMenuPage />}></Route>
+        </Route>
+      </Routes>
+
+    </div>
   )
 }
 

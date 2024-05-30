@@ -19,7 +19,7 @@ const Login = () => {
 
         try {
 
-            const response = await axios.post(`http://localhost:5000/api/v1/users/login`, values)
+            const response = await axios.post(`https://office-lunch-menu-management-sage.vercel.app/api/v1/users/login`, values)
             if (response.status === 200) {
                 setAuth({
                     token: response.data.data.accessToken,

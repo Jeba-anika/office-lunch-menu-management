@@ -36,7 +36,7 @@ const ViewDailyMenu = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await api.get('http://localhost:5000/api/v1/lunch-options')
+            const response = await api.get('https://office-lunch-menu-management-sage.vercel.app/api/v1/lunch-options')
             setAllMenus(response.data.data)
         }
         fetchData()
@@ -48,7 +48,7 @@ const ViewDailyMenu = () => {
         setIsConfirmChoiceModalOpen(true)
     }
     const handleConfirmChoice = async () => {
-        const response = await api.post('http://localhost:5000/api/v1/lunch-options', { "lunchoptionid": selectedMenu.id })
+        const response = await api.post('https://office-lunch-menu-management-sage.vercel.app/api/v1/employee-choices', { "lunchoptionid": selectedMenu.id })
         if (response.status === 200) {
             setIsConfirmChoiceModalOpen(false)
             messageApi.open({
@@ -74,6 +74,7 @@ const ViewDailyMenu = () => {
 
     return (
         <>
+            {contextHolder}
             <Row gutter={[16, 16]}>
                 {
                     allMenus.length > 0 ? allMenus.map(item => <Col key={item.id} xs={24} sm={12} md={12} lg={12} xl={8}>

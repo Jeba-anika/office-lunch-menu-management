@@ -24,7 +24,7 @@ const ViewAllEmployeeChoices = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await api.get("http://localhost:5000/api/v1/employee-choices")
+            const response = await api.get("https://office-lunch-menu-management-sage.vercel.app/api/v1/employee-choices")
             console.log(response)
             if (response.status === 200) {
                 setAllEmployeeChoices(response.data.data)

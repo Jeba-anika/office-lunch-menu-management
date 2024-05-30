@@ -38,7 +38,7 @@ const AdminMenuPage = () => {
     })
 
     const fetchData = async () => {
-        const response = await api.get("http://localhost:5000/api/v1/lunch-options")
+        const response = await api.get("https://office-lunch-menu-management-sage.vercel.app/api/v1/lunch-options")
         if (response.status === 200) {
             const menus = response?.data?.data.map(item => { return { key: item.id, ...item } })
             setAllMenus(menus)
@@ -62,7 +62,7 @@ const AdminMenuPage = () => {
     const onFinish = async (values) => {
 
         const editedMenu = { ...values, date: new Date(values.date).toISOString() }
-        const response = await api.put(`http://localhost:5000/api/v1/lunch-options/${selectedMenu.id}`, editedMenu)
+        const response = await api.put(`https://office-lunch-menu-management-sage.vercel.app/api/v1/lunch-options/${selectedMenu.id}`, editedMenu)
         if (response.status === 200) {
             messageApi.open({
                 type: 'success',
@@ -93,7 +93,7 @@ const AdminMenuPage = () => {
         setSelectedMenu({})
     };
     const handleDeleteMenu = async () => {
-        const response = await api.delete(`http://localhost:5000/api/v1/lunch-options/${selectedMenu.id}`)
+        const response = await api.delete(`https://office-lunch-menu-management-sage.vercel.app/api/v1/lunch-options/${selectedMenu.id}`)
         if (response.status === 200) {
             fetchData()
             setSelectedMenu({})
@@ -166,7 +166,7 @@ const AdminMenuPage = () => {
     const onAddFinish = async (values) => {
         console.log(values)
         const data = values?.items.map(value => { return { ...value, date: new Date(value.date).toISOString() } })
-        const response = await api.post('http://localhost:5000/api/v1/lunch-options/create-menu', { options: data })
+        const response = await api.post('https://office-lunch-menu-management-sage.vercel.app/api/v1/lunch-options/create-menu', { options: data })
         if (response.status === 200) {
             fetchData()
             setIsAddModalOpen(false)

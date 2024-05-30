@@ -19,7 +19,7 @@ const Register = () => {
 
         try {
 
-            const response = await axios.post(`http://localhost:5000/api/v1/users/register`, values)
+            const response = await axios.post(`https://office-lunch-menu-management-sage.vercel.app/api/v1/users/register`, values)
             if (response.status === 200) {
 
                 messageApi.open({

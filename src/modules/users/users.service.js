@@ -44,6 +44,7 @@ const createUser = async (data) => {
 
 
 const loginUser = async (userData) => {
+    console.log('login')
     const client = await pool.connect()
     const isUserExists = await client.query('SELECT * FROM users WHERE email = $1', [userData.email])
     if (isUserExists.rows.length > 0) {
